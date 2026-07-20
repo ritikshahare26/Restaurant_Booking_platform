@@ -1,4 +1,8 @@
-import "dotenv/config";
+import dns from "dns";
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
+import dotenv from "dotenv";
+dotenv.config();
 import express, { Request, Response } from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
@@ -7,7 +11,7 @@ const app = express();
 //connect mongoBD 
 await connectDB()
 
-// Middlewarenpnpx 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
