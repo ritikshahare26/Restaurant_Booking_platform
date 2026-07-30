@@ -3,11 +3,12 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 import dotenv from "dotenv";
 dotenv.config();
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
 import restaurantRouter from "./routes/restaurantRoutes.js";
+import bookingrouter from "./routes/bookingRoutes.js";
 
 const app = express();
 //connect mongoBD 
@@ -24,13 +25,14 @@ app.get("/", (req: Request, res: Response) => {
 });
 app.use ("/api/auth",authRouter)
 app.use ("/api/restaurants",restaurantRouter)
+app.use ("/api/booking",bookingrouter)
 
 //Global error handaler
 app.use((err: Error, req: Request, res: Response, next: NextFunction)=>{
     console.error ("Unhandle Error:",err );
     res.status(500).json({
         message : err.message ||"Internal Server Error",
-        stack: process.env.nood_EVN ==="production"? undefined : err.stack,
+        stack: process.env.NODE_ENV ==="production"? undefined : err.stack,
 
 
     });

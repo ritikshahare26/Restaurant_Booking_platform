@@ -23,25 +23,25 @@ export const getRestaurants = async(req:Request, res:Response): Promise<void>=>{
         }
         if(priceRange){
             const prices = Array.isArray(priceRange)? priceRange:[priceRange];
-            queryObj.priceRange {$in:prices};
+            queryObj.priceRange ={$in:prices};
         }
         if(rating){
-            queryObj.rating{$get:parseFloat(rating as string)};
+            queryObj.rating = {$gte:parseFloat(rating as string)};
         }
         if(location){
-            queryObj.{$regex:location as string, $options : "i"};
+            queryObj.location = {$regex:location as string, $options : "i"};
         }
         // sorting 
-        let sortOpration : any ={createAt:-1}
+        let sortOption : any ={createdAt:-1}
         if (sort ==="rating"){
-            sortOption ={rating :-1}
+            sortOption ={rating :-1};
         }else if(sort==="price_low"){
-            sortOption={"priceRang:1"};
+            sortOption={priceRange:1};
         }else if(sort=== "price_high"){
             sortOption={priceRange: -1};
         }
 
-        const restaurant =await Restaurant.find(queryObj).sort(sortOpration);
+        const restaurant =await Restaurant.find(queryObj).sort(sortOption);
             res.json(restaurant)
 
 
@@ -68,29 +68,28 @@ export const getFeaturedRestaurants = async(req:Request, res:Response): Promise<
     }
 
 }
-// Get single restaurants by slugqueryObj.priceRange = { $in: prices };
+// Get single restaurant by slug
 // Get /api/restaurants/ slug
 export const getRestaurantByslug = async(req:Request, res:Response): Promise<void>=>{
     try {
-        const restaurant = await Restaurant.finedOne ({slug:req.params.slug})
+        const restaurant = await Restaurant.findOne ({slug:req.params.slug})
         if(!restaurant){
             res.status(404).json({message: "Restaurant not found"});
             return;
         }
 
-        //If not approved verify authorizatione(owner or admin)
+        //If not approved verify authorization(owner or admin)
         if (restaurant.status !=="approved"){
             let isAuthorized = false;
             if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
                 try {
-                    const token = req.headers.authorization.split("")[1];
-                    cost decoded = jwt.verify(token, process. env.JWT_SECRET as string) as 
+                    const token = req.headers.authorization.split(" ")[1];
+                    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as 
                     {id :string};
 
                     const user =await User.findById(decoded.id);
                      
-                    if (user && (user.role==="admin"||(user.role==="owner"&& restaurant,
-                    owner.toString()===user._id.toString()))){
+                    if (user && (user.role==="admin"||(user.role==="owner"&& restaurant.owner.toString()===user._id.toString()))){
                         isAuthorized = true
                     }
                     
@@ -98,7 +97,7 @@ export const getRestaurantByslug = async(req:Request, res:Response): Promise<voi
                     //Ignore token verify error
                 }
             }
-            if (isAuthorized){
+            if (!isAuthorized){
                 res.status(404).json({message:"Restaurant not found or pending approval"});
                 return;
             }
@@ -112,7 +111,7 @@ export const getRestaurantByslug = async(req:Request, res:Response): Promise<voi
     }
 
 }
-// Get daynamic seat availability for slots
+// Get dynamic seat availability for slots
 // Get /api/restaurants/:id/availability
 export const getRestaurantavailability = async(req:Request, res:Response): Promise<void>=>{
     try {
@@ -126,9 +125,9 @@ export const getRestaurantavailability = async(req:Request, res:Response): Promi
             res.status(404).json({message:"Restaurant not found"})
             return;
         }
-        const booking = new Date( date as string )
+        const bookingDate = new Date( date as string )
        
-        //Get all active booking on this datevfor the restaurant
+        //Get all active booking on this date for the restaurant
         
         const bookings = await Booking.find({
             restaurant: restaurant._id,
@@ -139,7 +138,7 @@ export const getRestaurantavailability = async(req:Request, res:Response): Promi
 
         //map slots to available capacities
         const availability = restaurant.availableSlots.map((slot)=>{
-            const bookingseats= bookings.filter((b)=>b.time===slot).reduce((sum,b)=>sum+ b.guests.0)
+            const bookingSeats= bookings.filter((b)=>b.time===slot).reduce((sum,b)=>sum+ b.guests, 0)
             const totalSeats = restaurant.totalSeats|| 20;
             const availableSeats =Math.max(0, totalSeats - bookingSeats);
 
