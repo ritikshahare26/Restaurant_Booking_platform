@@ -1,6 +1,3 @@
-
-
-
 import { Response } from "express";
 import { AuthRequest } from "../middlewares/auth.js";
 import { Restaurant } from "../models/Restaurant.js";
@@ -34,6 +31,8 @@ export const getOwnerRestaurant = async (
       res.status(200).json(null);
       return;
     }
+
+    res.json(restaurant);
         
     } catch (error:any) {
         console.error(error);
@@ -58,7 +57,7 @@ export const createOwnerRestaurant =async (req:AuthRequest, res: Response):Promi
 
         }
         //Generate slug from name 
-        const slug = name.tolowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g,"");
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g,"");
 
         const slugExists= await Restaurant.findOne({slug});
         if(slugExists){
@@ -74,9 +73,8 @@ export const createOwnerRestaurant =async (req:AuthRequest, res: Response):Promi
         }
 
         //setup parased tags and slots
-        const parsedTags = typeof tags === "string" ? tags.split(",").map((t) => t.trim()) : [];
-        tags|| [];
-        const parsedslots = typeof availableSlots === "string"? availableSlots.split(",").map((s)=>s.trimEnd()): availableSlots|| ["17.00","18.00","19.00","20.00","21.00",];
+        const parsedTags = typeof tags === "string" ? tags.split(",").map((t) => t.trim()) : tags || [];
+        const parsedslots = typeof availableSlots === "string"? availableSlots.split(",").map((s)=>s.trim()): availableSlots|| ["17.00","18.00","19.00","20.00","21.00",];
 
         const restaurant = await Restaurant.create({
             name ,
@@ -201,15 +199,22 @@ export const updaterBookingStatus =async (req:AuthRequest, res: Response):Promis
             return;
 
         }
+
+        const booking = await Booking.findById(req.params.id);
+        if (!booking) {
+            res.status(404).json({message:"Booking not found"});
+            return;
+        }
+
         // Verify booking belongs to the owner's restaurant 
-        const restaurant = await Restaurant.findById(Booking.restaurant)
+        const restaurant = await Restaurant.findById(booking.restaurant)
     
         if(!restaurant|| restaurant.owner.toString() !==req.user?._id.toString()){
                res.status(401).json({message:"Not authorized to massage this booking "});
             return;
         }
-        Booking.status = status;
-        await booking .save ();
+        booking.status = status;
+        await booking.save();
         res.json(booking);
         
         
