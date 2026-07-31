@@ -9,6 +9,7 @@ import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
 import restaurantRouter from "./routes/restaurantRoutes.js";
 import bookingrouter from "./routes/bookingRoutes.js";
+import ownerRouter from "./routes/ownerRoutes.js";
 
 const app = express();
 //connect mongoBD 
@@ -26,6 +27,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use ("/api/auth",authRouter)
 app.use ("/api/restaurants",restaurantRouter)
 app.use ("/api/booking",bookingrouter)
+app.use ("/api/owner",ownerRouter)
 
 //Global error handaler
 app.use((err: Error, req: Request, res: Response, next: NextFunction)=>{
