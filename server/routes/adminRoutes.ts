@@ -1,0 +1,15 @@
+
+import { Router } from "express";
+import { approveRestaurant, getadminstats, getAllRestaurant } from "../controllers/adminController.js";
+import { adminOnly, protect } from "../middlewares/auth.js";
+
+const adminRouter = Router()
+
+adminRouter.use(protect)
+adminRouter.use(adminOnly)
+
+adminRouter.get("/restaurant",getAllRestaurant)
+adminRouter.put("/restaurant/:id/approve",approveRestaurant)
+adminRouter.get("/stats",getadminstats)
+
+export default adminRouter
