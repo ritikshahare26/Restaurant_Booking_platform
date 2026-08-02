@@ -177,46 +177,8 @@ const seedData = async ()=>{
                  exclusive: true,
                  
              },
-             {
-                
-                 name: "L'Essence",
-                 slug: "l-essence",
-                 description:
-                     "An intimate, Parisian-inspired fine dining chamber wrapped in dark velvet and soft golden candle glow. L'Essence specializes in meticulous plating of haute gastronomy, creating a rich sensory dialogue between modern culinary innovation and classic romance.",
-                 cuisine: "French",
-                 priceRange: "$$$$",
-                 rating: 4.9,
-                 reviewCount: 88,
-                 location: "Manhattan, NY",
-                 address: "115 Greenwich St, New York, NY 10006",
-                 image: "/restaurant_5.png",
-                 chef: "Jean-Luc Picard",
-                 tags: ["Romantic", "Velvet Booths", "Candlelit", "Haute Cuisine"],
-                 availableSlots: ["18:00", "19:00", "20:00", "21:00", "22:00"],
-                 featured: true,
-                 exclusive: false,
-                
-             },
-             {
-                 
-                 name: "Terraza Cielo",
-                 slug: "terraza-cielo",
-                 description:
-                     "A sun-drenched rooftop oasis celebrating Italian and Mediterranean lifestyles. Featuring floor-to-ceiling foliage, white marble bistro tables, and panoramic skyline views, Terraza Cielo serves hand-crafted pastas and coastal seafood paired with bright botanical cocktails.",
-                 cuisine: "Italian",
-                 priceRange: "$$$",
-                 rating: 4.7,
-                 reviewCount: 205,
-                 location: "Manhattan, NY",
-                 address: "244 Fifth Ave Rooftop, New York, NY 10001",
-                 image: "/restaurant_3.jpg",
-                 chef: "Elena Rossi",
-                 tags: ["Rooftop", "Skyline Views", "Handmade Pasta", "Craft Cocktails"],
-                 availableSlots: ["12:00", "13:00", "17:00", "18:00", "19:00", "20:00", "21:00"],
-                 featured: true,
-                 exclusive: false,
-                 
-             },
+             
+             
          ];
            
           console.log("Inserting restaurants...");
