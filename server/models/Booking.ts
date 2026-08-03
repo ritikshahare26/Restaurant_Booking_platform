@@ -55,7 +55,6 @@ const BookingSchema = new Schema<IBooking>(
     },
     bookingId: {
       type: String,
-      required: true,
     },
   },
   {
@@ -64,14 +63,13 @@ const BookingSchema = new Schema<IBooking>(
 );
 
 // Auto-generate booking ID
-BookingSchema.pre("save", function (next) {
+BookingSchema.pre("save", async function () {
   if (!this.bookingId) {
     this.bookingId = `GR-${crypto
       .randomBytes(4)
       .toString("hex")
       .toUpperCase()}`;
   }
-  next();
 });
 
 export const Booking = model<IBooking>("Booking", BookingSchema);

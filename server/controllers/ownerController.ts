@@ -4,6 +4,12 @@ import { Restaurant } from "../models/Restaurant.js";
 import {v2 as cloudinary} from 'cloudinary'
 import { Booking } from "../models/Booking.js";
 
+
+cloudinary.config({
+    cloudinary_url: process.env.CLOUDINARY_URL,
+});
+
+
 //helper function to upload to cloudinary
 const uploadToCloudinary = (fileBuffer:Buffer): Promise<{secure_url:string}>=>{
     return new Promise((resolve, reject)=>{

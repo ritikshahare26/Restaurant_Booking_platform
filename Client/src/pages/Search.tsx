@@ -41,7 +41,9 @@ export default function Search() {
            try {
             setLoading(true);
             // constaruct query string directly from searchParams
-            const res = await api.get(`/restaurant?${searchParams. toString()}`)
+          //  const res = await api.get(`/restaurant?${searchParams. toString()}`)
+          const res = await api.get(`/restaurants?{searchParams. toString()}`)
+         
             setRestaurants(res.data)
            } catch (error: any ) {
             toast.error(error?.response?.data?.message || error?.message);
